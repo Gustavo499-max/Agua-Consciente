@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ÁguaConsciente — Calculadora de consumo doméstico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <p class="hero__kicker">Projeto acadêmico · Educação hídrica</p>
+      <h1 class="hero__title">A água que some<br>sem você perceber.</h1>
+      <p class="hero__subtitle">
+        Um banho de 15 minutos, uma torneira aberta enquanto você escova os dentes,
+        uma máquina de lavar rodando meio vazia. Some tudo isso e descubra
+        quanto realmente sai da sua casa todos os dias.
+      </p>
+      <a href="#calculadora" class="hero__cta">Calcular meu consumo</a>
+    </div>
+    <div class="hero__stat" aria-hidden="false">
+      <span class="hero__stat-number" id="statLitros">0</span>
+      <span class="hero__stat-label">litros é o consumo médio diário por pessoa no Brasil</span>
+      <span class="hero__stat-source">Fonte: SNIS, Sistema Nacional de Informações sobre Saneamento</span>
+    </div>
+  </div>
+  <svg class="hero__wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,32 C240,80 480,0 720,24 C960,48 1200,72 1440,32 L1440,80 L0,80 Z"></path>
+  </svg>
+</header>
+
+<main>
+
+  <section id="calculadora" class="calc">
+    <div class="calc__intro">
+      <h2>Calculadora de consumo</h2>
+      <p>Preencha o que se aplica à sua rotina. Deixe em branco o que não usa — vamos considerar como zero.</p>
+    </div>
+
+    <form id="formCalculadora" class="calc__grid">
+
+      <fieldset class="calc-card calc-card--banho">
+        <legend><span class="calc-card__icon">🚿</span> Banho</legend>
+        <div class="field">
+          <label for="tempoBanho">Tempo médio de cada banho</label>
+          <div class="field__input">
+            <input type="number" id="tempoBanho" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">min</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="banhos">Banhos por dia</label>
+          <div class="field__input">
+            <input type="number" id="banhos" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">por dia</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-card calc-card--torneira">
+        <legend><span class="calc-card__icon">🚰</span> Torneira aberta</legend>
+        <p class="calc-card__hint">Escovar os dentes, fazer a barba, lavar louça à mão</p>
+        <div class="field">
+          <label for="torneira">Tempo total com a torneira aberta</label>
+          <div class="field__input">
+            <input type="number" id="torneira" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">min/dia</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-card calc-card--descarga">
+        <legend><span class="calc-card__icon">🚽</span> Descarga</legend>
+        <div class="field">
+          <label for="descargas">Número de descargas</label>
+          <div class="field__input">
+            <input type="number" id="descargas" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">por dia</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-card calc-card--roupa">
+        <legend><span class="calc-card__icon">🧺</span> Máquina de lavar roupa</legend>
+        <div class="field">
+          <label for="roupa">Cargas de roupa</label>
+          <div class="field__input">
+            <input type="number" id="roupa" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">por semana</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-card calc-card--carro">
+        <legend><span class="calc-card__icon">🚗</span> Lavagem de carro</legend>
+        <p class="calc-card__hint">Com mangueira, sem balde</p>
+        <div class="field">
+          <label for="carro">Vezes que lava</label>
+          <div class="field__input">
+            <input type="number" id="carro" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">por mês</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-card calc-card--jardim">
+        <legend><span class="calc-card__icon">🌱</span> Jardim ou quintal</legend>
+        <p class="calc-card__hint">Rega com mangueira</p>
+        <div class="field">
+          <label for="jardim">Tempo de rega</label>
+          <div class="field__input">
+            <input type="number" id="jardim" min="0" placeholder="0" inputmode="numeric">
+            <span class="field__unit">min/dia</span>
+          </div>
+        </div>
+      </fieldset>
+
+    </form>
+
+    <div class="calc__actions">
+      <button type="button" id="btnCalcular" class="btn btn--primary">Calcular consumo</button>
+      <button type="button" id="btnLimpar" class="btn btn--ghost">Limpar campos</button>
+    </div>
+  </section>
+
+  <section id="resultado" class="resultado" hidden>
+
+    <div class="resultado__headline">
+      <div>
+        <p class="resultado__eyebrow">Seu resultado</p>
+        <p class="resultado__numero"><span id="consumoDiario">0</span><span class="resultado__unidade">litros / dia</span></p>
+      </div>
+      <div class="resultado__badge" id="classificacaoBadge">
+        <span id="classificacaoTexto">—</span>
+      </div>
+    </div>
+
+    <div class="resultado__secundarios">
+      <div class="stat-mini">
+        <span class="stat-mini__valor" id="consumoMensal">0 L</span>
+        <span class="stat-mini__label">estimativa por mês</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-mini__valor" id="custoMensal">R$ 0,00</span>
+        <span class="stat-mini__label">custo estimado / mês*</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-mini__valor" id="comparativoMedia">—</span>
+        <span class="stat-mini__label">vs. média nacional</span>
+      </div>
+    </div>
+
+    <div class="resultado__breakdown">
+      <h3>De onde vem o seu consumo</h3>
+      <div id="barrasConsumo" class="barras"></div>
+    </div>
+
+    <div class="resultado__dica">
+      <h3>Recomendações para você</h3>
+      <ul id="listaDicas" class="lista-dicas"></ul>
+    </div>
+
+    <button type="button" id="btnCompartilhar" class="btn btn--ghost btn--small">Copiar resultado</button>
+    <p class="resultado__nota">*Custo calculado com tarifa média de R$ 5,00 por m³. Valores podem variar conforme sua concessionária.</p>
+
+  </section>
+
+  <section class="guia">
+    <h2>Guia rápido de economia</h2>
+    <div class="guia__grid">
+
+      <details class="guia-item" open>
+        <summary><span class="guia-item__icon">🚿</span> No banho</summary>
+        <p>Reduza o tempo para 5 minutos e feche o registro ao se ensaboar. Um banho de 15 minutos com chuveiro comum pode consumir mais de 130 litros — o dobro do recomendado.</p>
+      </details>
+
+      <details class="guia-item">
+        <summary><span class="guia-item__icon">🚰</span> Na pia</summary>
+        <p>Feche a torneira ao escovar os dentes ou ensaboar a louça. Deixá-la aberta por apenas 5 minutos desperdiça cerca de 30 litros.</p>
+      </details>
+
+      <details class="guia-item">
+        <summary><span class="guia-item__icon">🧺</span> Na lavanderia</summary>
+        <p>Só ligue a máquina com carga completa. Lavar duas vezes com meia carga gasta bem mais água do que uma única lavagem cheia.</p>
+      </details>
+
+      <details class="guia-item">
+        <summary><span class="guia-item__icon">🌱</span> No jardim</summary>
+        <p>Regue no início da manhã ou no fim da tarde para reduzir a evaporação, e prefira regador a mangueira sempre que possível.</p>
+      </details>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>ÁguaConsciente — Projeto acadêmico de conscientização sobre consumo de água</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

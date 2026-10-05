@@ -120,6 +120,18 @@
         </div>
       </fieldset>
 
+      <fieldset class="calc-card">
+        <legend><span class="calc-card__icon">💰</span> Tarifa</legend>
+        <p class="calc-card__hint">Opcional. Em branco, usamos R$ 5,00 por m³.</p>
+        <div class="field">
+          <label for="tarifa">Valor cobrado pela concessionária</label>
+          <div class="field__input">
+            <input type="text" id="tarifa" inputmode="decimal" placeholder="5,00" autocomplete="off">
+            <span class="field__unit">R$/m³</span>
+          </div>
+        </div>
+      </fieldset>
+
     </form>
 
     <div class="calc__actions">
@@ -166,7 +178,7 @@
     </div>
 
     <button type="button" id="btnCompartilhar" class="btn btn--ghost btn--small">Copiar resultado</button>
-    <p class="resultado__nota">*Custo calculado com tarifa média de R$ 5,00 por m³. Valores podem variar conforme sua concessionária.</p>
+    <p class="resultado__nota" id="notaCusto">*Custo calculado com tarifa de R$ 5,00 por m³.</p>
 
   </section>
 

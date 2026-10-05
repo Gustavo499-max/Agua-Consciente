@@ -9,7 +9,9 @@ const LITROS_CARRO_LAVAGEM = 500; // por lavagem com mangueira
 const LITROS_JARDIM_MIN = 15;    // por minuto de rega com mangueira
 
 const MEDIA_NACIONAL_DIA = 151;  // L/dia por pessoa (referência SNIS)
-const TARIFA_M3 = 5.0;           // R$ por m³ (estimativa)
+const TARIFA_PADRAO_M3 = 5;      // R$ por m³ quando o campo fica vazio ou inválido
+
+let tarifaAplicada = TARIFA_PADRAO_M3;
 
 // ---------------------------------------------
 // Animação do número no hero
@@ -50,6 +52,13 @@ function formatarMoeda(valor) {
   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+function lerTarifa() {
+  const texto = document.getElementById('tarifa').value.trim();
+  if (texto === '') return TARIFA_PADRAO_M3;
+  if (!/^\d+([.,]\d+)?$/.test(texto)) return TARIFA_PADRAO_M3;
+  return Number(texto.replace(',', '.'));
+}
+
 // ---------------------------------------------
 // Cálculo principal
 // ---------------------------------------------
@@ -88,21 +97,25 @@ function calcularConsumo() {
 
   const consumoTotal = categorias.reduce((soma, c) => soma + c.valor, 0);
   const consumoMensal = consumoTotal * 30;
-  const custoMensal = (consumoMensal / 1000) * TARIFA_M3;
+  const tarifa = lerTarifa();
+  const custoMensal = (consumoMensal / 1000) * tarifa;
 
-  renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias);
+  renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias, tarifa);
 }
 
 // ---------------------------------------------
 // Renderização
 // ---------------------------------------------
-function renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias) {
+function renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias, tarifa) {
   const secao = document.getElementById('resultado');
   secao.hidden = false;
+  tarifaAplicada = tarifa;
 
   document.getElementById('consumoDiario').textContent = Math.round(consumoTotal).toLocaleString('pt-BR');
   document.getElementById('consumoMensal').textContent = formatarLitros(consumoMensal);
   document.getElementById('custoMensal').textContent = formatarMoeda(custoMensal);
+  document.getElementById('notaCusto').textContent =
+    `*Custo calculado com tarifa de ${formatarMoeda(tarifa)} por m³.`;
 
   const diferenca = consumoTotal - MEDIA_NACIONAL_DIA;
   const comparativoEl = document.getElementById('comparativoMedia');
@@ -210,8 +223,9 @@ function copiarResultado() {
   const custo = document.getElementById('custoMensal').textContent;
   const classificacao = document.getElementById('classificacaoTexto').textContent;
 
+  const tarifaFormatada = formatarMoeda(tarifaAplicada);
   const texto =
-    `Meu consumo de água estimado: ${diario} L/dia (${mensal}/mês, ${custo}/mês). ` +
+    `Meu consumo de água estimado: ${diario} L/dia (${mensal}/mês, ${custo}/mês, tarifa de ${tarifaFormatada}/m³). ` +
     `Classificação: ${classificacao}. Calculado em ÁguaConsciente.`;
 
   if (navigator.clipboard) {

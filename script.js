@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function valorCampo(id) {
   const el = document.getElementById(id);
   const n = Number(el.value);
-  return isNaN(n) || n < 0 ? 0 : n;
+  return !Number.isFinite(n) || n < 0 ? 0 : n;
 }
 
 function formatarLitros(valor) {
@@ -54,6 +54,8 @@ function formatarMoeda(valor) {
 // Cálculo principal
 // ---------------------------------------------
 function calcularConsumo() {
+  if (!document.getElementById('formCalculadora').reportValidity()) return;
+
   const tempoBanho = valorCampo('tempoBanho');
   const banhos = valorCampo('banhos');
   const torneira = valorCampo('torneira');

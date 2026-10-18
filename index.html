@@ -11,6 +11,7 @@
 </head>
 <body>
 
+  
 <header class="hero">
   <div class="hero__inner">
     <div class="hero__copy">
@@ -39,10 +40,22 @@
   <section id="calculadora" class="calc">
     <div class="calc__intro">
       <h2>Calculadora de consumo</h2>
-      <p>Preencha o que se aplica à sua rotina. Deixe em branco o que não usa — vamos considerar como zero.</p>
+      <p>Informe quantas pessoas moram na casa e preencha os campos abaixo com o consumo da casa toda. Deixe em branco o que não usa — vamos considerar como zero.</p>
     </div>
 
     <form id="formCalculadora" class="calc__grid">
+
+      <fieldset class="calc-card calc-card--moradores">
+        <legend><span class="calc-card__icon">🏠</span> Sua casa</legend>
+        <p class="calc-card__hint">Usado para comparar o consumo com a média nacional por pessoa</p>
+        <div class="field">
+          <label for="moradores">Pessoas na residência</label>
+          <div class="field__input">
+            <input type="number" id="moradores" min="1" step="1" value="1" inputmode="numeric">
+            <span class="field__unit">pessoas</span>
+          </div>
+        </div>
+      </fieldset>
 
       <fieldset class="calc-card calc-card--banho">
         <legend><span class="calc-card__icon">🚿</span> Banho</legend>
@@ -54,7 +67,7 @@
           </div>
         </div>
         <div class="field">
-          <label for="banhos">Banhos por dia</label>
+          <label for="banhos">Banhos por dia (somando todos da casa)</label>
           <div class="field__input">
             <input type="number" id="banhos" min="0" placeholder="0" inputmode="numeric">
             <span class="field__unit">por dia</span>

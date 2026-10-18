@@ -42,6 +42,11 @@ function valorCampo(id) {
   return isNaN(n) || n < 0 ? 0 : n;
 }
 
+function valorMoradores() {
+  // Mínimo de 1 pessoa; ignora decimais e valores inválidos
+  return Math.max(1, Math.floor(valorCampo('moradores')));
+}
+
 function formatarLitros(valor) {
   return `${Math.round(valor).toLocaleString('pt-BR')} L`;
 }
@@ -61,6 +66,7 @@ function calcularConsumo() {
   const roupaSemana = valorCampo('roupa');
   const carroMes = valorCampo('carro');
   const jardim = valorCampo('jardim');
+  const moradores = valorMoradores();
 
   const camposPreenchidos = [tempoBanho, banhos, torneira, descargas, roupaSemana, carroMes, jardim]
     .some((v) => v > 0);
@@ -90,13 +96,13 @@ function calcularConsumo() {
   const consumoMensal = consumoTotal * 30;
   const custoMensal = (consumoMensal / 1000) * TARIFA_M3;
 
-  renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias);
+  renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias, moradores);
 }
 
 // ---------------------------------------------
 // Renderização
 // ---------------------------------------------
-function renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias) {
+function renderizarResultado(consumoTotal, consumoMensal, custoMensal, categorias, moradores) {
   const secao = document.getElementById('resultado');
   secao.hidden = false;
 
@@ -104,14 +110,17 @@ function renderizarResultado(consumoTotal, consumoMensal, custoMensal, categoria
   document.getElementById('consumoMensal').textContent = formatarLitros(consumoMensal);
   document.getElementById('custoMensal').textContent = formatarMoeda(custoMensal);
 
-  const diferenca = consumoTotal - MEDIA_NACIONAL_DIA;
+  // A média nacional é por pessoa: compara-se o consumo por pessoa da casa
+  const consumoPorPessoa = consumoTotal / moradores;
+  const sufixo = moradores > 1 ? '/pessoa' : '';
+  const diferenca = consumoPorPessoa - MEDIA_NACIONAL_DIA;
   const comparativoEl = document.getElementById('comparativoMedia');
   if (Math.abs(diferenca) < 5) {
     comparativoEl.textContent = 'Igual à média';
   } else if (diferenca > 0) {
-    comparativoEl.textContent = `+${Math.round(diferenca)} L acima`;
+    comparativoEl.textContent = `+${Math.round(diferenca)} L${sufixo} acima`;
   } else {
-    comparativoEl.textContent = `${Math.round(diferenca)} L abaixo`;
+    comparativoEl.textContent = `${Math.round(diferenca)} L${sufixo} abaixo`;
   }
 
   // Classificação
@@ -119,10 +128,10 @@ function renderizarResultado(consumoTotal, consumoMensal, custoMensal, categoria
   const texto = document.getElementById('classificacaoTexto');
   let classe, rotulo;
 
-  if (consumoTotal <= 150) {
+  if (consumoPorPessoa <= 150) {
     classe = 'baixo';
     rotulo = '🟢 Consumo consciente';
-  } else if (consumoTotal <= 250) {
+  } else if (consumoPorPessoa <= 250) {
     classe = 'moderado';
     rotulo = '🟡 Consumo moderado';
   } else {
@@ -209,9 +218,11 @@ function copiarResultado() {
   const mensal = document.getElementById('consumoMensal').textContent;
   const custo = document.getElementById('custoMensal').textContent;
   const classificacao = document.getElementById('classificacaoTexto').textContent;
+  const moradores = valorMoradores();
+  const pessoas = moradores > 1 ? `${moradores} moradores` : '1 morador';
 
   const texto =
-    `Meu consumo de água estimado: ${diario} L/dia (${mensal}/mês, ${custo}/mês). ` +
+    `Meu consumo de água estimado: ${diario} L/dia para ${pessoas} (${mensal}/mês, ${custo}/mês). ` +
     `Classificação: ${classificacao}. Calculado em ÁguaConsciente.`;
 
   if (navigator.clipboard) {
